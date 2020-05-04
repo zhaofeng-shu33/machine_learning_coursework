@@ -1,0 +1,51 @@
+%% Definitions for Inference and Information
+%% UPDATE: September 26, 2017 by Xiangxiang 
+\newcommand{\theterm}{Fall 2017}
+\usepackage{xeCJK}
+\usepackage{bm}
+
+\newcommand{\thecoursename}{
+Tsinghua University\\
+%\vspace*{0.1in}
+机器学习基础
+}
+\newcommand{\studentID}{2017310711}
+\newcommand{\courseheader}{
+\vspace*{-1in}
+\begin{center}
+\thecoursename \\
+\theterm
+\vspace*{0.1in}
+\hrule
+\end{center}
+}
+\newcommand{\NP}{$\mathcal{NP}$}
+\newcommand{\rvx}{\mathsf{x}}    % x, r.v.
+\newcommand{\rvy}{\mathsf{y}}    % y, r.v.
+\newcommand{\rvz}{\mathsf{z}}    % z, r.v.
+\newcommand{\urvx}{\underline{\mathsf{x}}}    % x, r.v. vec
+\newcommand{\urvy}{\underline{\mathsf{y}}}    % y, r.v. vec
+\newcommand{\urvz}{\underline{\mathsf{z}}}    % z, r.v. vec
+\newcommand{\defas}{\triangleq} %\coloneqq
+\newcommand{\reals}{\mathbb{R}}
+%\newcommand{\T}{\mathrm{T}}    % transpose
+
+% \newcommand{\E}[1]{\mathbb{E}\left[{#1}\right]}
+% \newcommand{\Prob}[1]{\mathbb{P}\left({#1}\right)}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argsup}{arg\,sup}
+\DeclareMathOperator*{\arginf}{arg\,inf}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\MSE}{MSE}
+\DeclareMathOperator{\In}{\mathbb{I}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Prob}{\mathbb{P}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator\err{err}
+\DeclareMathOperator\conv{conv}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\usepackage{algorithmic}
+\usepackage{algorithm}

@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage{xeCJK}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{hyperref}
+\setCJKmainfont[AutoFakeBold]{SimSun}
+\usepackage{bm}
+%\DeclareMathOperator*{\Pr}{Pr}
+\begin{document}
+\title{机器学习第四次课笔记}
+\author{赵丰，2017310711}
+\maketitle
+用向量$\bm{x}$表示一个特征，其维数为$N$,$\bm{x}_i$表示第$i$个样本的特征，$\bm{w}$表示使用的算法所需要的参数向量，
+维数为$N$,对于所给的假设空间$H$,包含了所有线性判决器，希望从中选取$h_w$使得对于给定的样本$S=\{(x_1,y_1),\dots,(x_m,y_m)\}$,
+经验误差$R(h)$最小。
+其中
+\begin{equation}
+R(h)=\frac{1}{m}\sum_{i=1}^m (h_w(x_i)-y_i)^2
+\end{equation}
+如果$h_w(x_i)=\bm{w}^T\bm{x}$,那么可以使用\textbf{最小二乘法}的技术手段求出最优的参数$\bm{w}$,但这种全局的方法计算开销太大，
+而且每增加一个新的样本点就要全局重新算一次，不太方便，为此可以采用在线学习的方式逐次更新$\bm{w}$,方法是从初始点
+$\bm{w}_0$出发，当处理到第$i$个样本时，按照下面的迭代方法更新$\bm{w}_{i-1}$到$\bm{w}_i$
+\begin{equation}
+\bm{w}_i=\bm{w}_{i-1}+\alpha (y_i-h_w(\bm{x}_i)\bm{x}_i
+\end{equation}
+上式中$\alpha$被称为学习率，$(y_i-h_w(\bm{x}_i)\bm{x}_i$可以证明是$R(h)$的负梯度方向。注意到每次更新完$\bm{w}_i$后
+$h_w$也做出相应的改变，这种类似梯度下降的动态更新算法被称为随机梯度下降，因为不因的样本排序最终训练得到的$\bm{w}_m$可能会不一样。
+当然，每次更新我们可以用上全部的样本信息，即重复下面的步骤直到$\bm{w}$不发生变化:
+\begin{equation}
+\bm{w} \leftarrow \bm{w}+\alpha\sum_{i=1}^m (y_i-h_w(\bm{x}_i)\bm{x}_i
+\end{equation}
+这个方法叫批量梯度下降方法，计算量相对较大。
+
+上面我们的讨论是针对$h_w(x_i)=\bm{w}^T\bm{x}$，这里特征和样本信息是一样的， 实际上我们也可以用一个特征映射函数$\Phi(\bm{x})$
+对样本信息$\bm{x}$进行处理，得到的向量所在的空间维数可能与$\bm{x}$的维数不一样。比如即使我们的$\bm{x}$只有一维，如果我们采用
+Taylor级数的方法，把$(x,x^2,x^3)$都看成特征，那么特征空间就有三维。
+因此一般的$h_w(x_i)$有下面的形式：
+\begin{equation}
+h_w(x_i)=\bm{w}^T\Phi(\bm{x})
+\end{equation}
+
+与\textbf{最大似然法}的联系:
+如果我们假设估计量$h_w(\bm{x})$是$Y$的无偏估计，且$h_w(\bm{x})-Y$ 是零均值的高斯分布，那么对于给定的$m$个独立同分布的样本，
+可以得到其似然函数为:
+\begin{equation}
+p(y_1,\dots,y_m)=\prod_{i=1}^m p(y_i| h_w(\bm{x}_i),\beta)
+\end{equation}
+$\beta$和方差有关，统计推断中有结果表明对于独立同分布的高斯样本，使用最大似然法得到的均值的估计量是均方误差最小的，
+这也可以直接从上式推出，这里用来说明最小二乘法和最大似然法的联系。
+
+上面对$\bm{w}$的估计没有考虑到$\bm{w}$的先验信息，如果我们假设$\bm{w}$服从零均值的高斯分布，各分量相互独立，那么由
+Bayes 方法的最大似然估计，我们考虑$\bm{w}$的后验概率密度：
+\begin{equation}
+p(\bm{w}|\bm{x},\bm{y}) \propto p(\bm{y}|\bm{w},\bm{x}) p(\bm{w})
+\end{equation}
+进一步可以得到要极小化的函数为：
+\begin{equation}
+\frac{1}{2}\sum_{i=1}^m (h_w(x_i)-y_i)^2+\frac{\lambda}{2}\bm{w}^T\bm{w}
+\end{equation}
+上式中出现的最后一项可以防止过拟合现象，与正则化加的惩罚因子一致。
+
+对于二元分类问题，假设结果只能属于$C_1$或$C_2$,我们考虑对于给定的样本$\bm{x}$,给出$p(C_1|\bm{x})$的概率，直接计算可以得到
+\begin{equation}
+p(C_1|\bm{x})=\frac{1}{1+exp(-\ln(\frac{p(C_1|x)}{p(C_2|x)}))}
+\end{equation}
+如果$p(C_1|x)>p(C_2|x)$,由上式推出$p(C_1|\bm{x})>0.5$,取
+\begin{equation}
+z=\ln(\frac{p(C_1|x)}{p(C_2|x)})
+\end{equation}
+我们得到Logistic 函数
+\begin{equation}
+p(C_1|\bm{x})=\frac{1}{1+e^{-z}}
+\end{equation}
+通过判断$z$是否大于零，即可判断 $p(C_1|\bm{x})$ 是否大于0.5，进而判断出$y$是否属于$C_1$类。
+这里，我们假设$z=\bm{w}^T\bm{x}$,这样$z$是否大于零和$N$维空间超平面分离两类点的问题就可以联系起来了。
+因此Logistic 判别函数的形式为：
+\begin{equation}
+p(C_1|\bm{x})=\frac{1}{1+e^{-\bm{w}^T\bm{x}}}
+\end{equation}
+对于$m$个样本点，其似然函数为
+\begin{equation}
+L(\bm{w})=\prod_{i=1}^m (h_w(\bm{x}_i))^{y_i} (1-h_w(\bm{x}_i))^{1-y_i}
+\end{equation}
+可以进一步求出第$i$个乘积项的梯度为$(y_i-h_w(\bm{x}_i))\bm{x}_i$，由于这里要求$L(\bm{w})$的极大值，所以有下面的动态更新$\bm{w}$的方法，
+也称为随机梯度上升法则，
+\begin{equation}\label{eq:Perceptron}
+\bm{w} \leftarrow \bm{w}+\alpha (y_i-h_w(\bm{x}_i))\bm{x}_i
+\end{equation}
+形式与最小二乘时一样，但这里$h_w(\bm{x}_i)$是采用Logistic 判别函数。
+
+下面探讨\eqref{eq:Perceptron}式代表的几何含义，之前提到过$\bm{w}^T\bm{x}=0$是两类判决结果的分界线，且
+\begin{equation}
+h_w(\bm{x}_i)=\begin{cases}
+1 & \bm{w}^T\bm{x}>0\\
+0 & \bm{w}^T\bm{x}<0 \\
+\end{cases}
+\end{equation}
+所以当$y_i$与$\bm{w}^T\bm{x}$符号一致时，\eqref{eq:Perceptron}式中更新项为零，即对于第$i$个样本，因为判别结果正确所以$\bm{w}$不更新。
+否则采用的更新策略总是使得对当前判决更有利，比如$y_i=1,h_w(\bm{x}_i)=0$,这时$\bm{w}$加$\alpha\bm{x}_i$,加完后新的$\bm{w}^T\bm{x}_i$比原来
+大了$\alpha||\bm{x}_i||^2$,从而更有利于分到$y_i=1$那一组。
+
+\eqref{eq:Perceptron}即给出了感知器算法的基本迭代步骤，实际中$m$个样本通常不只用一遍，要做 multiple pass 以提高 结果的准确性。
+
+在超平面分类问题中，我们还要考虑截距$b$的影响，因为完整的超平面方程是$\bm{w}^T\bm{x}+b=0$,但$b$的更新可以采用类似\eqref{eq:Perceptron}式
+的方法$b \leftarrow b+\alpha (y_i-h_w(\bm{x}_i))$，而我们的判别函数相应的修改为
+\begin{equation}
+h_w(\bm{x}_i)=\begin{cases}
+1 & \bm{w}^T\bm{x}+b>0\\
+0 & \bm{w}^T\bm{x}+b<0 \\
+\end{cases}
+\end{equation}
+
+当然，线性分类器有一定的局限性，比如对于平面上XOR四个点$\{(0,0)\rightarrow 0,(0,1)\rightarrow 1,(1,0)\rightarrow 1,(1,1)\rightarrow 0\}$就不是线性可分的。
+之后可以采用升维的方法进行处理。
+
+\end{document}

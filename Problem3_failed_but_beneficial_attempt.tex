@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{xeCJK}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{hyperref}
+\setCJKmainfont[AutoFakeBold]{SimSun}
+\usepackage{bm}
+%\DeclareMathOperator*{\Pr}{Pr}
+\begin{document}
+\title{第一次作业}
+\author{赵丰，2017310711}
+\maketitle
+\textbf{P3}
+按照$h$ 在$S$上一致做：
+
+本题是要说明用$\mathcal{A}$算法给出的假设$h$有很高的概率是一致的。即证明$\forall \delta>0$,存在
+$m>$一个不超过多项式时间函数,使得$\Pr_{S\sim D^m}(h_S\text{不是一致的})<\delta$。 
+我们知道PAC 学习算法找到的$h_S$可以使得泛化误差尽可能小，即有
+$\Pr_{S\sim D^m}(R(h_S)\geq \epsilon)<\delta$,对于$m>p_1(\frac{1}{\epsilon},\frac{1}{\delta})$成立。
+这里我们取小量$\epsilon < \frac{1}{|Z|}$
+$h_S\text{不是一致的}$等价于经验误差$\hat{R}(h_S)\geq \frac{1}{|Z|}$,
+当$m>p_1(\frac{1}{\epsilon},\frac{1}{\delta})$时，做如下推导：
+\begin{align}
+\Pr_{S\sim D^m}(\hat{R}(h_S)\geq \frac{1}{|Z|})=& \Pr_{S\sim D^m}(\hat{R}(h_S)\geq \frac{1}{|Z|},R(h_S)\geq \epsilon)
++\Pr_{S\sim D^m}(\hat{R}(h_S)\geq \frac{1}{|Z|},R(h_S)\leq \epsilon) \nonumber \\
+\leq & \Pr_{S\sim D^m}(R(h_S)\geq \epsilon)+\Pr_{S\sim D^m}(\hat{R}(h_S)\geq \frac{1}{|Z|},R(h_S)\leq \epsilon) \nonumber \\
+\leq & \frac{\delta}{2} +\Pr_{S\sim D^m}(\hat{R}(h_S)-R(h_S)\geq \frac{1}{|Z|} -\epsilon) \quad\text{PAC 学习定义} \nonumber \\
+\leq &\frac{\delta}{2} +exp\left(-2m(\frac{1}{|Z|}-\epsilon)^2\right)\quad\text{课本推论2.1}\label{eq:anchor}
+\end{align}
+取
+\begin{equation}
+p_2(\frac{1}{\epsilon},\frac{1}{\delta})=\frac{1}{2}\frac{\log(\frac{2}{\delta})}{(\frac{1}{H}-\epsilon)^2}
+\end{equation}
+则若取$m>max\{p_1(\frac{1}{\epsilon},\frac{1}{\delta}),p_2(\frac{1}{\epsilon},\frac{1}{\delta})\}$，则
+在\eqref{eq:anchor}式中进一步放缩有
+\begin{equation}
+\Pr_{S\sim D^m}(\hat{R}(h_S)\geq \frac{1}{|Z|})\leq \delta
+\end{equation}
+
+按$h$在$Z$上一致做：
+
+$\forall \delta >0$,存在不快于多项式增长的函数$p(\frac{1}{\delta})$，使得当$m>p(\frac{1}{\delta})$时下式成立： 
+\begin{equation}\label{eq:3modify}
+\Pr_{S\sim D^m}(R(h_S)=0)>1-\delta
+\end{equation}
+$\Pr_{S\sim D^m}(R(h_S)=0)$等价于$m$个样本中含所有的$|Z|$个样本点的概率，否则假设$(x_i,y_i)$不在样本集 中，
+总可以对$y_i$取反让泛化误差不为零。
+设$Z=\{(x_1,y_1),\dots,(x_u,y_u)\}$，其中$u=|Z|$,设我们的分布$D$是一般的 Multinomial 分布 即满足 $P(X=x_i)=p_i$,但我们这里假设
+$0<p_i<1$。因为若某一个$p_i$为零，即sample中不可能取到这个点，可以把它从$Z$中剔除，如果某一个$p_i=1$，则由概率归一化条件，
+其他的$p_j$全为零，问题是平凡的。所以我们可以取到$0<p=\min_{1\leq i\leq u}\{p_i\}<1$,式\eqref{eq:3modify}等价于：
+\begin{equation}
+\Pr_{S\sim D^m}(R(h_S)\neq 0)<\delta
+\end{equation}
+可以精确地计算出:
+\begin{equation}
+\Pr_{S\sim D^m}(R(h_S)\neq 0)=\sum_{i=1}^u (1-p_i)^m 
+\end{equation}
+用$p$进一步放缩得到:
+\begin{align}
+\Pr_{S\sim D^m}(R(h_S)\neq 0) =& \sum_{i=1}^u (1-p_i)^m  \nonumber\\
+\leq & u(1-p)^m
+\end{align}
+令$u(1-p)^m=\delta$，解出$m$的临界bound $p(\frac{1}{\delta})$得到
+\begin{equation}
+p(\frac{1}{\delta})=\frac{\log(\frac{u}{\delta})}{\log(\frac{1}{1-p})}
+\end{equation}
+我们得到的样本复杂度关于$\frac{1}{\delta}$是log级别的，注意$p$是与分布$D$有关的常数而$u=|Z|$。
+
+因此我们证明了原来的结论。
+\end{document}
